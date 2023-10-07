@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
                     val navController = rememberNavController()
 
-                    Navigation(navController, viewModel)
+                    Navigation(viewModel, navController)
 
                 }
             }
