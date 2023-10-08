@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.andreypoltev.northsteelnotes.data.NoteDatabase
+import com.andreypoltev.northsteelnotes.presentation.NoteDetailsScreen
 import com.andreypoltev.northsteelnotes.ui.theme.NorthSteelNotesTheme
 
 class MainActivity : ComponentActivity() {
@@ -62,6 +63,7 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     val navController = rememberNavController()
+//                    NoteDetailsScreen(viewModel = viewModel, navController = navController)
 
                     Navigation(viewModel, navController)
 

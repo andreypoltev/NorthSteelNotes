@@ -1,5 +1,7 @@
 package com.andreypoltev.northsteelnotes
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.room.Delete
@@ -18,19 +20,22 @@ class MainViewModel(
 
     val notes: Flow<List<Note>> = db.getAllNotes()
 
+
+    val currentNote = mutableStateOf(Note())
+
+
     init {
         viewModelScope.launch(Dispatchers.IO) {
-//            db.insertNote(Note(title = "Title", content = "Content"))
+            db.upsertNote(Note(title = "오늘 생긴 일", content = "우늘은 엄청 어려워요. 어떡하죠?"))
 
         }
     }
 
-//    fun getNoteById(id: Int): Note? {
-//        viewModelScope.launch(Dispatchers.IO) {
-//            return db.getNoteById(id)
-//        }
-//
-//    }
+    suspend fun getNoteById(id: Int): Note? {
+
+        return db.getNoteById(id)
+    }
+
 
     fun upsertNote(title: String, content: String, imageUri: String? = null) {
         viewModelScope.launch(Dispatchers.IO) {

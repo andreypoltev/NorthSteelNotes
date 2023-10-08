@@ -9,10 +9,10 @@ import java.time.format.DateTimeFormatter
 data class Note(
     @PrimaryKey
     val id: Int? = null,
-    val title: String,
-    val content: String,
+    val title: String = "",
+    val content: String = "",
     val dateUpdated: String = getDateCreated(),
-    val imageUri: String? = null
+    val imageUri: String = "null"
 )
 
 fun getDateCreated(): String {
