@@ -6,6 +6,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.andreypoltev.northsteelnotes.presentation.AddEditNoteScreen
 import com.andreypoltev.northsteelnotes.presentation.MainScreen
 import com.andreypoltev.northsteelnotes.presentation.NoteDetailsScreen
 import com.andreypoltev.northsteelnotes.util.Route
@@ -31,17 +32,17 @@ fun Navigation(viewModel: MainViewModel, navController: NavHostController) {
 
         }
 
-//        composable(route = Route.addEditNoteScreen + "/{id}",
-//            arguments = listOf(
-//                navArgument(name = "id") {
-//                    type = NavType.IntType
-//                }
-//            )
-//
-//        ) {
-//            AddEditNoteScreen(viewModel, navController, entry.arguments?.getInt("id") ?: -1)
-//
-//        }
+        composable(route = Route.addEditNoteScreen + "/{id}",
+            arguments = listOf(
+                navArgument(name = "id") {
+                    type = NavType.IntType
+                }
+            )
+
+        ) { entry ->
+            AddEditNoteScreen(viewModel, navController, entry.arguments?.getInt("id") ?: -1)
+
+        }
 
 
     }

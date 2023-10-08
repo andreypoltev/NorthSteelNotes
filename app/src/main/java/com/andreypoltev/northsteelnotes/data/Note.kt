@@ -9,7 +9,7 @@ import java.time.format.DateTimeFormatter
 data class Note(
     @PrimaryKey
     val id: Int? = null,
-    val title: String = "",
+    var title: String = "",
     val content: String = "",
     val dateUpdated: String = getDateCreated(),
     val imageUri: String = "null"
