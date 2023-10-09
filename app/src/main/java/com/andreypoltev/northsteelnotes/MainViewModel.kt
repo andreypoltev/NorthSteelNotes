@@ -17,10 +17,11 @@ class MainViewModel(
 
     val currentNote = mutableStateOf(Note())
 
+//    val currentNote: Flow<Note> = Note()
+
 
 
     init {
-
         viewModelScope.launch(Dispatchers.IO) {
             if (db.getCount() == 0)
                 db.insertNote(
@@ -29,7 +30,6 @@ class MainViewModel(
                         content = "При первом запуске в приложении должна быть одна заметка с текстом."
                     )
                 )
-
         }
     }
 

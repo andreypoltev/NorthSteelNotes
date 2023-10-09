@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -37,9 +36,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.andreypoltev.northsteelnotes.MainViewModel
-import com.andreypoltev.northsteelnotes.R
 import com.andreypoltev.northsteelnotes.data.Note
-import com.andreypoltev.northsteelnotes.saveImageToInternalStorage
+import com.andreypoltev.northsteelnotes.util.saveImageToInternalStorage
 import kotlinx.coroutines.launch
 import java.io.File
 

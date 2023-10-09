@@ -1,8 +1,7 @@
-package com.andreypoltev.northsteelnotes
+package com.andreypoltev.northsteelnotes.util
 
 import android.content.Context
 import android.net.Uri
-import androidx.compose.runtime.Composable
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 

@@ -15,7 +15,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.andreypoltev.northsteelnotes.data.NoteDatabase
-import com.andreypoltev.northsteelnotes.presentation.NoteDetailsScreen
 import com.andreypoltev.northsteelnotes.ui.theme.NorthSteelNotesTheme
 
 class MainActivity : ComponentActivity() {
@@ -38,8 +37,6 @@ class MainActivity : ComponentActivity() {
         }
     )
 
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,17 +53,13 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             NorthSteelNotesTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
                     val navController = rememberNavController()
-//                    NoteDetailsScreen(viewModel = viewModel, navController = navController)
 
                     Navigation(viewModel, navController)
-
                 }
             }
         }

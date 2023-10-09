@@ -13,10 +13,10 @@ import com.andreypoltev.northsteelnotes.util.Route
 
 @Composable
 fun Navigation(viewModel: MainViewModel, navController: NavHostController) {
+
     NavHost(navController = navController, startDestination = Route.mainScreen) {
         composable(Route.mainScreen) {
             MainScreen(viewModel, navController)
-
         }
 
         composable(
@@ -26,10 +26,8 @@ fun Navigation(viewModel: MainViewModel, navController: NavHostController) {
                     type = NavType.IntType
                 }
             )
-
-            ) { entry ->
+        ) { entry ->
             NoteDetailsScreen(viewModel, navController, entry.arguments?.getInt("id") ?: -1)
-
         }
 
         composable(route = Route.addEditNoteScreen + "/{id}",
@@ -38,13 +36,8 @@ fun Navigation(viewModel: MainViewModel, navController: NavHostController) {
                     type = NavType.IntType
                 }
             )
-
         ) { entry ->
             AddEditNoteScreen(viewModel, navController, entry.arguments?.getInt("id") ?: -1)
-
         }
-
-
     }
-
 }
