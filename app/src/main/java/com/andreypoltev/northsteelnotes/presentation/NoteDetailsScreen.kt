@@ -27,26 +27,27 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.andreypoltev.northsteelnotes.MainViewModel
 import com.andreypoltev.northsteelnotes.data.Note
 import com.andreypoltev.northsteelnotes.util.Route
 import kotlinx.coroutines.launch
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController, noteId: Int) {
 
+    val context = LocalContext.current
 
     val coroutineScope = rememberCoroutineScope()
 
     var title by remember {
-        mutableStateOf("")
-    }
-
-    var content by remember {
         mutableStateOf("")
     }
 
@@ -61,7 +62,7 @@ fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController
                 note = newNote
 
             title = note.title
-            content = note.content
+//            content = note.content
         }
     }
 
@@ -79,21 +80,15 @@ fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController
 
                 }
 
-//                IconButton(onClick = { viewModel.upsertNote(title = title, content = content) }) {
-//                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Save Note Button")
-//
-//
-//                }
-
                 IconButton(onClick = {
                     viewModel.deleteNote(note)
                     navController.popBackStack()
                 }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Note Button")
-
-
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete Note Button"
+                    )
                 }
-
             }
         )
 
@@ -101,54 +96,32 @@ fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController
         Column(
             Modifier
                 .fillMaxSize()
-                .padding(start = 16.dp, end = 16.dp, top = it.calculateTopPadding(), bottom = it.calculateBottomPadding())
+                .padding(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = it.calculateTopPadding(),
+                    bottom = it.calculateBottomPadding()
+                )
         ) {
-//            Text(text = "Note id is: ${noteId}")
+
+            if (note.imageUri != null) {
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+//                        .size(250.dp)
+                    model = ImageRequest.Builder(context)
+                        .data(File(context.filesDir, note.imageUri))
+                        .crossfade(enable = true)
+                        .build(),
+                    contentDescription = "Image",
+                    contentScale = ContentScale.Fit,
+                )
+            }
+
             Text(text = note.content)
-//            Text(text = "Note title is: ${note.title}")
-//            Text(text = note.dateUpdated)
-//
-//            Text(text = "Title is $title")
-//            Text(text = "Content is $content")
-
-//            OutlinedTextField(
-//                value = title,
-//                onValueChange = { title = it },
-//                textStyle = MaterialTheme.typography.headlineLarge,
-//                singleLine = true,
-//                placeholder = {
-//                    Text(text = "Title")
-//                },
-//                modifier = Modifier.fillMaxWidth(),
-//                colors = TextFieldDefaults.outlinedTextFieldColors(
-//                    focusedBorderColor = Color.Transparent,
-//                    unfocusedBorderColor = Color.Transparent
-//                )
-//            )
-
-
-//            Spacer(modifier = Modifier.height(16.dp))
-
-//            OutlinedTextField(
-//                value = content,
-//                onValueChange = { content = it },
-////                textStyle = MaterialTheme.typography.headlineLarge,
-////                singleLine = true,
-//                placeholder = {
-//                    Text(text = "Content")
-//                },
-//                modifier = Modifier.fillMaxSize(),
-//                colors = TextFieldDefaults.outlinedTextFieldColors(
-//                    focusedBorderColor = Color.Transparent,
-//                    unfocusedBorderColor = Color.Transparent
-//                )
-//            )
-
 
         }
 
-
     }
 
-//    Text(text = "Note Details Screen", Modifier.fillMaxSize())
 }

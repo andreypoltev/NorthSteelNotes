@@ -12,7 +12,7 @@ data class Note(
     var title: String = "",
     val content: String = "",
     val dateUpdated: String = getDateCreated(),
-    val imageUri: String = "null"
+    val imageUri: String? = null
 )
 
 fun getDateCreated(): String {

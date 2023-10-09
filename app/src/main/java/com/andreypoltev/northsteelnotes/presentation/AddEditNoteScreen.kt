@@ -1,10 +1,17 @@
 package com.andreypoltev.northsteelnotes.presentation
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,15 +31,48 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.andreypoltev.northsteelnotes.MainViewModel
+import com.andreypoltev.northsteelnotes.R
 import com.andreypoltev.northsteelnotes.data.Note
+import com.andreypoltev.northsteelnotes.saveImageToInternalStorage
 import kotlinx.coroutines.launch
+import java.io.File
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController, noteId: Int) {
+    
+    var debug by remember {
+        mutableStateOf("")
+    }
+
+    val context = LocalContext.current
+
+    var imageUri: String? by remember {
+        mutableStateOf(null)
+    }
+
+    var fileName by remember {
+        mutableStateOf<String?>(null)
+    }
+
+    val photoPicker = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia()
+    ) {
+        if (it != null) {
+            Log.d("PhotoPicker", "Selected URI: $it")
+            imageUri = it.toString()
+            fileName = saveImageToInternalStorage(context, it.toString())
+        } else {
+            Log.d("PhotoPicker", "No media selected")
+        }
+    }
 
     var title by remember {
         mutableStateOf("")
@@ -55,11 +95,15 @@ fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController
                 note = newNote
             title = note.title
             content = note.content
+            imageUri = note.imageUri
+
+            if (note.imageUri != null)
+                fileName = note.imageUri
 
         }
     }
 
-    val ti = viewModel.currentNote.value
+
 
 
 
@@ -72,12 +116,33 @@ fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController
         },
             actions = {
 
+                IconButton(onClick = {
+
+                    photoPicker.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly
+                        )
+                    )
+                }) {
+                    Icon(
+                        imageVector = Icons.Default.AddCircle,
+                        contentDescription = "Add Image Button"
+                    )
+                }
+
                 if (title.isNotEmpty()) {
                     IconButton(onClick = {
-                        if (noteId == -1)
-                            viewModel.insertNote(title = title, content = content)
-                        else
-                            viewModel.updateNote(id = noteId, title = title, content = content)
+                        if (imageUri != null)
+                            fileName = saveImageToInternalStorage(context = context, uri = imageUri.toString())
+                        debug = "Filename: " + fileName
+                        if (noteId == -1) {
+                            viewModel.insertNote(title = title, content = content, imageUri = fileName)
+//                            debug += fileName + "\n"
+                        }
+                        else {
+                            viewModel.updateNote(id = noteId, title = title, content = content, imageUri = fileName)
+//                            debug += fileName + "\n"
+                        }
 
                         navController.popBackStack()
 
@@ -92,16 +157,91 @@ fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController
             })
 
     }) {
-        Column(
+
+        LazyColumn(
             Modifier.padding(
                 bottom = it.calculateBottomPadding(),
                 top = it.calculateTopPadding()
             )
         ) {
-//            Text("Note id is: $noteId")
-//            Text("Note title is: $title")
-//            Text("Note content is: $content")
-//            Text("Current note is: ${ti.toString()}")
+//            item {
+////                debug += "imageUri is: $imageUri"
+//
+//                Text(text = "Note.image: ${note.imageUri}")
+//                Text(text = "ImageUri is: $imageUri")
+//
+//                Text(text = "Debug is: $debug")
+//
+//            }
+
+            item {
+//                Text(text = "Image Uri is: ${note.imageUri}")
+
+                if (fileName != null) {
+                    AsyncImage(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+
+                                photoPicker.launch(
+                                    PickVisualMediaRequest(
+                                        ActivityResultContracts.PickVisualMedia.ImageOnly
+                                    )
+                                )
+
+                            },
+//                        .size(250.dp)
+                        model = ImageRequest.Builder(context)
+//                            .data(File(context.filesDir, note.imageUri))
+                            .data(File(context.filesDir, fileName))
+                            .crossfade(enable = true)
+                            .build(),
+                        contentDescription = "Image",
+                        contentScale = ContentScale.Fit,
+                    )
+                }
+            }
+
+            item {
+                OutlinedTextField(
+                    value = title,
+                    onValueChange = { title = it },
+                    textStyle = MaterialTheme.typography.headlineLarge,
+                    singleLine = true,
+                    placeholder = {
+                        Text(text = "Title")
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    )
+                )
+
+
+            }
+
+            item {
+                OutlinedTextField(
+                    value = content,
+                    onValueChange = { content = it },
+//                textStyle = MaterialTheme.typography.headlineLarge,
+//                singleLine = true,
+                    placeholder = {
+                        Text(text = "Content")
+                    },
+                    modifier = Modifier.fillMaxSize(),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = Color.Transparent,
+                        unfocusedBorderColor = Color.Transparent
+                    )
+                )
+            }
+
+
+
+
+
 
 //            BasicTextField(
 //                value = title,
@@ -115,38 +255,12 @@ fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController
 ////                    }
 //            )
 
-            OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
-                textStyle = MaterialTheme.typography.headlineLarge,
-                singleLine = true,
-                placeholder = {
-                    Text(text = "Title")
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent
-                )
-            )
+
 
 
 //            Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = content,
-                onValueChange = { content = it },
-//                textStyle = MaterialTheme.typography.headlineLarge,
-//                singleLine = true,
-                placeholder = {
-                    Text(text = "Content")
-                },
-                modifier = Modifier.fillMaxSize(),
-                colors = TextFieldDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = Color.Transparent,
-                    unfocusedBorderColor = Color.Transparent
-                )
-            )
+
 
 //            BasicTextField(
 //                value = content,

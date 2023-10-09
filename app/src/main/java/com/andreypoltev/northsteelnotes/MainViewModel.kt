@@ -33,6 +33,17 @@ class MainViewModel(
         }
     }
 
+    fun updateCurrentNote(id: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val note = db.getNoteById(id)
+            if (note != null) {
+                currentNote.value = note
+            }
+        }
+
+
+    }
+
 
     suspend fun getNoteById(id: Int): Note? {
         return db.getNoteById(id)
@@ -41,13 +52,13 @@ class MainViewModel(
 
     fun insertNote(title: String, content: String, imageUri: String? = null) {
         viewModelScope.launch(Dispatchers.IO) {
-            db.insertNote(Note(title = title, content = content))
+            db.insertNote(Note(title = title, content = content, imageUri = imageUri))
         }
     }
 
     fun updateNote(id: Int, title: String, content: String, imageUri: String? = null) {
         viewModelScope.launch(Dispatchers.IO) {
-            db.updateNote(Note(id = id, title = title, content = content))
+            db.updateNote(Note(id = id, title = title, content = content, imageUri = imageUri))
         }
     }
 
