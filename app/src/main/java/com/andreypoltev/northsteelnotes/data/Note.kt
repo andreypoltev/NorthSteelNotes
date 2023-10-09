@@ -11,7 +11,7 @@ data class Note(
     val id: Int? = null,
     var title: String = "",
     val content: String = "",
-    val dateUpdated: String = getDateCreated(),
+    val dateCreated: String = getDateCreated(),
     val imageUri: String? = null
 )
 

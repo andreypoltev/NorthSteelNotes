@@ -48,9 +48,9 @@ import java.io.File
 @Composable
 fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController, noteId: Int) {
     
-    var debug by remember {
-        mutableStateOf("")
-    }
+//    var debug by remember {
+//        mutableStateOf("")
+//    }
 
     val context = LocalContext.current
 
@@ -132,9 +132,8 @@ fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController
 
                 if (title.isNotEmpty()) {
                     IconButton(onClick = {
-                        if (imageUri != null)
-                            fileName = saveImageToInternalStorage(context = context, uri = imageUri.toString())
-                        debug = "Filename: " + fileName
+//                        if (imageUri != null)
+//                            fileName = saveImageToInternalStorage(context = context, uri = imageUri.toString())
                         if (noteId == -1) {
                             viewModel.insertNote(title = title, content = content, imageUri = fileName)
 //                            debug += fileName + "\n"
