@@ -14,6 +14,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -29,7 +30,7 @@ import java.io.File
 @Composable
 fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController, id: Int) {
 
-    val currentNote = viewModel.currentNote
+    val currentNote by viewModel.currentNote
 
     viewModel.updateCurrentNote(id)
 
@@ -38,7 +39,7 @@ fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController
     Scaffold(topBar = {
         TopAppBar(
             title = {
-                Text(text = viewModel.currentNote.value.title)
+                Text(text = currentNote.title)
             },
             actions = {
                 IconButton(onClick = { navController.navigate(Route.addEditNoteScreen + "/$id") }) {
@@ -48,7 +49,7 @@ fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController
                 }
 
                 IconButton(onClick = {
-                    viewModel.deleteNote(viewModel.currentNote.value)
+                    viewModel.deleteNote(currentNote)
                     navController.popBackStack()
                 }) {
                     Icon(
@@ -71,13 +72,13 @@ fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController
                 )
         ) {
 
-            if (viewModel.currentNote.value.imageUri != null) {
+            if (currentNote.imageUri != null) {
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxWidth(),
 //                        .size(250.dp)
                     model = ImageRequest.Builder(context)
-                        .data(File(context.filesDir, viewModel.currentNote.value.imageUri))
+                        .data(File(context.filesDir, currentNote.imageUri))
                         .crossfade(enable = true)
                         .build(),
                     contentDescription = "Image",
@@ -85,7 +86,7 @@ fun NoteDetailsScreen(viewModel: MainViewModel, navController: NavHostController
                 )
             }
 
-            Text(text = viewModel.currentNote.value.content)
+            Text(text = currentNote.content)
 
         }
 

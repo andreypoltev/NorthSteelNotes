@@ -45,10 +45,6 @@ import java.io.File
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController, noteId: Int) {
-    
-//    var debug by remember {
-//        mutableStateOf("")
-//    }
 
     val context = LocalContext.current
 
@@ -100,10 +96,6 @@ fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController
 
         }
     }
-
-
-
-
 
     Scaffold(topBar = {
         TopAppBar(title = {
@@ -161,18 +153,8 @@ fun AddEditNoteScreen(viewModel: MainViewModel, navController: NavHostController
                 top = it.calculateTopPadding()
             )
         ) {
-//            item {
-////                debug += "imageUri is: $imageUri"
-//
-//                Text(text = "Note.image: ${note.imageUri}")
-//                Text(text = "ImageUri is: $imageUri")
-//
-//                Text(text = "Debug is: $debug")
-//
-//            }
 
             item {
-//                Text(text = "Image Uri is: ${note.imageUri}")
 
                 if (fileName != null) {
                     AsyncImage(

@@ -1,5 +1,7 @@
 package com.andreypoltev.northsteelnotes
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,11 +17,8 @@ class MainViewModel(
 
     val notes: Flow<List<Note>> = db.getAllNotes()
 
-    val currentNote = mutableStateOf(Note())
-
-//    val currentNote: Flow<Note> = Note()
-
-
+    private val _currentNote = mutableStateOf(Note())
+    val currentNote = _currentNote
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
@@ -27,7 +26,7 @@ class MainViewModel(
                 db.insertNote(
                     Note(
                         title = "Title",
-                        content = "При первом запуске в приложении должна быть одна заметка с текстом."
+                        content = "При первом запуске в приложении должна быть одна заметка с текстом.",
                     )
                 )
         }
@@ -37,13 +36,10 @@ class MainViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             val note = db.getNoteById(id)
             if (note != null) {
-                currentNote.value = note
+                _currentNote.value = note
             }
         }
-
-
     }
-
 
     suspend fun getNoteById(id: Int): Note? {
         return db.getNoteById(id)
@@ -67,5 +63,4 @@ class MainViewModel(
             db.deleteNote(note)
         }
     }
-
 }
